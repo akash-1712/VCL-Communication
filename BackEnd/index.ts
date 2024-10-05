@@ -2,6 +2,7 @@ import express, { NextFunction, Response, Request } from "express";
 import { connectDB, gracefulShutdown } from "./connect";
 import authRouter from "./routes/auth";
 import studentRouter from "./routes/student";
+import staffRouter from "./routes/staff";
 import bodyParser from "body-parser";
 const dotenv = require("dotenv");
 dotenv.config();
@@ -42,6 +43,9 @@ app.use("/api/auth", authRouter);
 
 //-------------------------------- Student Route --------------------------------
 app.use("/api/student", studentRouter);
+
+//-------------------------------- Staff Route --------------------------------
+app.use("/api/staff", staffRouter);
 
 //-------------------------------- Incorrect URL Requests --------------------------------
 app.use(() => {

@@ -13,6 +13,7 @@ interface CustomError extends Error {
   data?: any;
 }
 
+//-------------------------------- Signup  --------------------------------
 exports.signup = async function (
   req: Request,
   res: Response,
@@ -63,6 +64,7 @@ exports.signup = async function (
   }
 };
 
+//-------------------------------- Login  --------------------------------
 exports.login = async function (
   req: Request,
   res: Response,

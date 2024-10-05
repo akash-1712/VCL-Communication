@@ -15,6 +15,7 @@ interface DecodedToken {
   role: string;
 }
 
+//-------------------------------- Authentication User Based On JWT Token --------------------------------
 module.exports = (
   req: AuthenticatedRequest,
   res: Response,

@@ -7,20 +7,27 @@ interface IResume extends Document {
   contactNumber: string;
   resumeUrl: string;
   uploadDate: Date;
+  publicId: string;
 }
 
-const resumeSchema = new Schema<IResume>({
-  studentId: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
+const resumeSchema = new Schema<IResume>(
+  {
+    studentId: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    name: { type: String, required: true },
+    email: { type: String, required: true },
+    contactNumber: { type: String, required: true },
+    resumeUrl: { type: String, required: true },
+    uploadDate: { type: Date, default: Date.now },
+    publicId: { type: String, required: true },
   },
-  name: { type: String, required: true },
-  email: { type: String, required: true },
-  contactNumber: { type: String, required: true },
-  resumeUrl: { type: String, required: true },
-  uploadDate: { type: Date, default: Date.now },
-});
+  {
+    timestamps: true,
+  }
+);
 
 const Resume: Model<IResume> = mongoose.model<IResume>("Resume", resumeSchema);
 

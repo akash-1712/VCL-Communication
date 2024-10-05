@@ -3,6 +3,8 @@ import { Request, Response, NextFunction } from "express";
 interface AuthorizedRequest extends Request {
   role?: string;
 }
+
+//-------------------------------- Authorized User Based On Role --------------------------------
 module.exports = function authorizeRoles(allowedRoles: string[]) {
   return (req: AuthorizedRequest, res: Response, next: NextFunction) => {
     const userRole = req.role;
