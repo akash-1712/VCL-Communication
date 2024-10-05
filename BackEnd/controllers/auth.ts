@@ -33,6 +33,11 @@ exports.signup = async function (
 
     const { username, password, role } = req.body;
 
+    const isUser = await User.findOne({ username: username });
+    if (isUser) {
+      throw new Error("Giver UserName already exists");
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = new User({
@@ -53,10 +58,10 @@ exports.signup = async function (
     );
 
     res.status(201).json({
-      message: "User Created Successfully",
+      message: "Welcome to VCL Communication,  " + username,
       token,
-      userId: result._id,
       name: result.username,
+      role: result.role,
     });
   } catch (err) {
     console.log(err);
@@ -108,10 +113,10 @@ exports.login = async function (
     );
 
     res.status(201).json({
-      message: "User Created Successfully",
+      message: `Welcome back, ${username}! You're now logged into your VCL Communication account.`,
       token,
-      userId: user._id,
       name: user.username,
+      role: user.role,
     });
   } catch (err) {
     console.log(err);
