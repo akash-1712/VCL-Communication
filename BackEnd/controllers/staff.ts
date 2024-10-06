@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 import Resume from "../models/resume";
+import axios from "axios";
 import User from "../models/user";
 const { storage } = require("../plugin/firebase/firebase");
 const {
@@ -168,11 +169,11 @@ exports.downloadFile = async function (
       getUserWithResume?.[0]?.resumeDetails?.publicId
     );
 
-    res.status(200).json({
-      message: "Resume Details Found Successfully",
-      resume: getUserWithResume,
-      downloadUrl,
+    const response = await axios.get(downloadUrl, {
+      responseType: "arraybuffer",
     });
+    res.setHeader("Content-Type", "application/pdf");
+    res.send(response.data);
   } catch (error) {
     next(error);
   }

@@ -9,6 +9,7 @@ interface ResumeDetails {
   email: string;
   contactNumber: string;
   resumeUrl: string;
+  uploadDate: string;
 }
 
 interface StudentDetails {

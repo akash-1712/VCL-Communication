@@ -1,5 +1,8 @@
-import { ReactNode, useContext, useState } from "react";
-import { toastifyError } from "../../Helpers/notificationToastify";
+import { ReactNode, useCallback, useContext, useState } from "react";
+import {
+  toastifyError,
+  toastifySuccess,
+} from "../../Helpers/notificationToastify";
 import StaffContext from "../../store/StaffContext";
 import AuthContext from "../../store/AuthContext";
 
@@ -15,41 +18,45 @@ export function StaffContextProvider({ children }: StaffContextProviderProps) {
   const { isLoggedIn, token, role } = useContext(AuthContext);
   const [studentDetails, setStudentDetails] = useState([]);
 
-  async function getStudentsDetails() {
-    try {
-      if (isLoggedIn && token && role === "staff") {
-        try {
-          const response = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/staff/studentDetails`,
-            {
-              method: "GET",
-              headers: {
-                "content-type": "application/json",
-                Accept: "application/json",
-                Authorization: "Bearer " + token,
-              },
+  const getStudentsDetails = useCallback(
+    async function getStudentsDetails() {
+      try {
+        if (isLoggedIn && token && role === "staff") {
+          try {
+            const response = await fetch(
+              `${import.meta.env.VITE_API_URL}/api/staff/studentDetails`,
+              {
+                method: "GET",
+                headers: {
+                  "content-type": "application/json",
+                  Accept: "application/json",
+                  Authorization: "Bearer " + token,
+                },
+              }
+            );
+
+            const resData: {
+              message: string;
+              studentDetails: [];
+            } = await response.json();
+
+            if (!response.ok) {
+              throw new Error(resData.message);
             }
-          );
 
-          const resData: {
-            message: string;
-            studentDetails: [];
-          } = await response.json();
-
-          if (!response.ok) {
-            throw new Error(resData.message);
+            setStudentDetails(resData.studentDetails);
+            console.log(resData.studentDetails);
+          } catch (error) {
+            toastifyError((error as Error).message || "Internal Server Error");
+            throw error;
           }
-
-          setStudentDetails(resData.studentDetails);
-        } catch (error) {
-          toastifyError((error as Error).message || "Internal Server Error");
-          throw error;
         }
+      } catch (error) {
+        toastifyError((error as Error).message || "Internal Server Error");
       }
-    } catch (error) {
-      toastifyError((error as Error).message || "Internal Server Error");
-    }
-  }
+    },
+    [isLoggedIn, role, token]
+  );
 
   async function downloadStudentResume(data: ResumeDownloadCredentials) {
     try {
@@ -67,14 +74,19 @@ export function StaffContextProvider({ children }: StaffContextProviderProps) {
           }
         );
 
-        const resData: { message: string; downloadUrl: string } =
-          await response.json();
+        const blob = await response.blob();
+        const urlObject = window.URL.createObjectURL(blob);
 
-        if (!response.ok) {
-          throw new Error(resData.message);
-        }
+        const a = document.createElement("a");
+        a.href = urlObject;
+        a.download = "VCL_document.pdf";
+        document.body.appendChild(a);
+        a.click();
 
-        console.log("Download URL: " + resData.downloadUrl);
+        a.remove();
+        window.URL.revokeObjectURL(urlObject);
+
+        toastifySuccess("File Download Success");
       }
     } catch (error) {
       toastifyError((error as Error).message || "Internal Server Error");
