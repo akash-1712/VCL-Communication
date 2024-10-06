@@ -35,7 +35,7 @@ const AddDetails: React.FC = () => {
         email: resume.email,
         contactNumber: resume.contactNumber,
         resume: resume.resumeUrl,
-        isResume: true,
+        isResume: false,
       });
       setResumeFileName(resume ? "Current Resume" : null);
     }
@@ -56,6 +56,7 @@ const AddDetails: React.FC = () => {
         setFormData({
           ...formData,
           resume: reader.result as string,
+          isResume: true,
         });
         setResumeFileName(file.name);
       }
@@ -100,6 +101,7 @@ const AddDetails: React.FC = () => {
       }
 
       if (isDetails) {
+        console.log(formData);
         await editDetails(formData);
       } else {
         formData.isResume = true;
@@ -190,7 +192,6 @@ const AddDetails: React.FC = () => {
             ref={(input) => setFileInput(input)}
             onChange={(e) => {
               if (e.target.files && e.target.files[0]) {
-                setFormData((preData) => ({ ...preData, isResume: true }));
                 handleFileChange(e.target.files[0]);
               }
             }}
@@ -203,7 +204,7 @@ const AddDetails: React.FC = () => {
             Uploaded file:{" "}
             <strong>
               {resumeFileName}
-              {formData.resume && formData.isResume && (
+              {formData.resume && !formData.isResume && (
                 <a
                   target="_blank"
                   rel="noopener noreferrer"

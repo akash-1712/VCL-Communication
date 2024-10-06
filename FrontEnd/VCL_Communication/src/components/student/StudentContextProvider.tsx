@@ -1,6 +1,9 @@
 import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import AuthContext from "../../store/AuthContext";
-import { toastifyError } from "../../Helpers/notificationToastify";
+import {
+  toastifyError,
+  toastifySuccess,
+} from "../../Helpers/notificationToastify";
 import StudentContext from "../../store/StudentContext";
 
 interface StudentContextProviderProps {
@@ -70,6 +73,9 @@ export function StudentContextProvider({
           toastifyError((error as Error).message || "Internal Server Error");
           throw error;
         }
+      } else {
+        setResume({ name: "", email: "", contactNumber: "", resumeUrl: "" });
+        setDetails(false);
       }
     },
     [isLoggedIn, role, token]
@@ -105,6 +111,8 @@ export function StudentContextProvider({
         }
 
         await getStudentDetails();
+
+        toastifySuccess("Added Details Successfully");
       }
     } catch (error) {
       toastifyError((error as Error).message || "Internal Server Error");
@@ -135,6 +143,8 @@ export function StudentContextProvider({
         }
 
         await getStudentDetails();
+
+        toastifySuccess("Edit Details Successfully");
       }
     } catch (error) {
       toastifyError((error as Error).message || "Internal Server Error");
