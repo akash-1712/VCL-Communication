@@ -10,6 +10,14 @@ dotenv.config();
 const router = express.Router();
 
 //-------------------------------- Add Students Details --------------------------------
+router.get(
+  "/getDetails",
+  isAuth,
+  authorizeRoles(["student"]),
+  studentController.getDetails
+);
+
+//-------------------------------- Add Students Details --------------------------------
 router.post(
   "/addDetails",
   [

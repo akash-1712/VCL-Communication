@@ -37,6 +37,54 @@ async function uploadFile(file: { base64: any }) {
   return { url: downloadURL, publicId: snapshot.metadata.name };
 }
 
+//-------------------------------- Get Student Details --------------------------------
+exports.getDetails = async function (
+  req: CustomRequest,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const errors = validationResult(req);
+
+    console.log(errors);
+
+    if (!errors.isEmpty()) {
+      const error: CustomError = new Error(errors.array()[0].msg);
+      error.code = 422;
+      error.data = errors.array();
+      throw error;
+    }
+
+    const userId = req.userId;
+
+    const isUser = await User.findById(userId);
+
+    if (!isUser) {
+      throw new Error("User not found");
+    }
+
+    const isResume = await Resume.findOne(
+      { studentId: userId },
+      { _id: 0, name: 1, email: 1, contactNumber: 1, resumeUrl: 1 }
+    );
+
+    if (!isResume) {
+      res.status(200).json({
+        message: "Not Details Found.",
+        isDetails: false,
+      });
+    } else {
+      res.status(200).json({
+        message: "Details Found.",
+        isDetails: true,
+        resume: isResume,
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 //-------------------------------- Add Student Details --------------------------------
 exports.addDetails = async function (
   req: CustomRequest,

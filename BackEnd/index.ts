@@ -22,13 +22,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   );
   res.setHeader("Access-Control-Allow-Credentials", "true");
 
-  // if (req.method === "OPTIONS") {
-  //   res.setHeader(
-  //     "Access-Control-Allow-Methods",
-  //     "GET, POST, PUT, DELETE, OPTIONS"
-  //   );
-  //  return res.status(200).json({});
-  // }
+  if (req.method === "OPTIONS") {
+    res.setHeader(
+      "Access-Control-Allow-Methods",
+      "GET, POST, PUT, DELETE, OPTIONS,PATCH"
+    );
+  }
 
   next();
 });

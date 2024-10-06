@@ -8,6 +8,9 @@ import AuthContext from "./store/AuthContext";
 import Login from "./pages/login/Login";
 import SignUp from "./pages/signup/SignUp";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import StudentProfile from "./pages/student/StudentProfile";
+import AddDetails from "./pages/student/AddDetailsForm";
+import StudentDetailsPage from "./pages/staff/StudentDetails";
 
 function App() {
   const { isLoggedIn } = useContext(AuthContext);
@@ -27,13 +30,38 @@ function App() {
           element={isLoggedIn ? <HomePage /> : <SignUp />}
         />
         <Route
-          path="/protected"
+          path="/studentDetails"
           element={
             <ProtectedRoute allowedRoles={["staff"]}>
-              <h1>this path is protected</h1>
+              <StudentDetailsPage />
             </ProtectedRoute>
           }
         ></Route>
+        <Route
+          path="/studentProfile"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              {<StudentProfile />}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/addDetails"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              {<AddDetails />}
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editDetails"
+          element={
+            <ProtectedRoute allowedRoles={["student"]}>
+              {<AddDetails />}
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<HomePage />} />
       </Routes>
     </Fragment>
   );

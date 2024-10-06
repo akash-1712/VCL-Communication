@@ -26,11 +26,11 @@ function NavBar() {
         >
           HomePage
         </NavLink>
-        {authCtx.isLoggedIn && (
+        {authCtx.isLoggedIn && authCtx.role === "student" && (
           <NavLink
             className={`${({ isActive }: { isActive: boolean }) =>
               isActive ? "active" : ""} cursor-pointer`}
-            to="/profile"
+            to="/studentProfile"
             end
             replace
           >
@@ -41,7 +41,7 @@ function NavBar() {
           <NavLink
             className={`${({ isActive }: { isActive: boolean }) =>
               isActive ? "active" : ""} cursor-pointer`}
-            to="/protected"
+            to="/studentDetails"
             end
             replace
           >
