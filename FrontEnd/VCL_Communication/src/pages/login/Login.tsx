@@ -15,6 +15,7 @@ function Login() {
     username: "",
     password: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -23,6 +24,7 @@ function Login() {
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     try {
       event.preventDefault();
+      setIsLoading(true);
       await authCtx.login({
         username: formData.username,
         password: formData.password,
@@ -30,6 +32,8 @@ function Login() {
       navigate("/", { replace: true });
     } catch (error) {
       toastifyError((error as Error).message || "Internal Server Error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -82,9 +86,12 @@ function Login() {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          className={`w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={isLoading}
         >
-          Submit
+          {isLoading ? "Loading..." : "Submit"}
         </button>
       </form>
     </div>

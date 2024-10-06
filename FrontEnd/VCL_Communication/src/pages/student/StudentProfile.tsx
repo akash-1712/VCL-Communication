@@ -1,11 +1,29 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import StudentContext from "../../store/StudentContext";
 import AuthContext from "../../store/AuthContext";
 import { Link } from "react-router-dom";
 
 const StudentProfile: React.FC = () => {
-  const { isDetails, resume } = useContext(StudentContext);
+  const { isDetails, resume, getDetails } = useContext(StudentContext);
   const { username } = useContext(AuthContext);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDetails = async () => {
+      await getDetails();
+      setLoading(false);
+    };
+
+    loadDetails();
+  }, [getDetails]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-lg">Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-6 max-w-md">

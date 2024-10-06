@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import { ReactNode, useCallback, useContext, useState } from "react";
 import AuthContext from "../../store/AuthContext";
 import {
   toastifyError,
@@ -68,6 +68,14 @@ export function StudentContextProvider({
           if (resData.isDetails) {
             setResume(resData.resume);
             setDetails(resData.isDetails);
+          } else {
+            setResume({
+              name: "",
+              email: "",
+              contactNumber: "",
+              resumeUrl: "",
+            });
+            setDetails(false);
           }
         } catch (error) {
           toastifyError((error as Error).message || "Internal Server Error");
@@ -81,12 +89,12 @@ export function StudentContextProvider({
     [isLoggedIn, role, token]
   );
 
-  useEffect(
-    function () {
-      getStudentDetails();
-    },
-    [getStudentDetails]
-  );
+  // useEffect(
+  //   function () {
+  //     getStudentDetails();
+  //   },
+  //   [getStudentDetails]
+  // );
 
   async function addDetails(data: StudentCredentials): Promise<void> {
     try {

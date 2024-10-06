@@ -23,6 +23,7 @@ const AddDetails: React.FC = () => {
   const [resumeFileName, setResumeFileName] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [fileInput, setFileInput] = useState<HTMLInputElement | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { addDetails, editDetails, resume, isDetails } =
     useContext(StudentContext);
@@ -99,9 +100,9 @@ const AddDetails: React.FC = () => {
         toastifyError("Resume is required");
         return;
       }
+      setIsLoading(true);
 
       if (isDetails) {
-        console.log(formData);
         await editDetails(formData);
       } else {
         formData.isResume = true;
@@ -111,6 +112,8 @@ const AddDetails: React.FC = () => {
       navigate("/studentProfile", { replace: true });
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -220,9 +223,12 @@ const AddDetails: React.FC = () => {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          className={`w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={isLoading}
         >
-          {isDetails ? "Update Details" : "Submit"}
+          {isLoading ? "Loading..." : isDetails ? "Update Details" : "Submit"}
         </button>
       </form>
     </div>

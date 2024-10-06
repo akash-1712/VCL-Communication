@@ -21,6 +21,7 @@ function SignUp() {
     password: "",
     confirmPassword: "",
   });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -31,6 +32,7 @@ function SignUp() {
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     try {
       event.preventDefault();
+      setIsLoading(true);
       await authCtx.signUp({
         username: formData.username,
         role: formData.role,
@@ -40,6 +42,8 @@ function SignUp() {
       navigate("/", { replace: true });
     } catch (error) {
       toastifyError((error as Error).message || "Internal Server Error");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,9 +87,7 @@ function SignUp() {
             className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
             required
           >
-            <option defaultChecked value="student">
-              Student
-            </option>
+            <option value="student">Student</option>
             <option value="staff">Staff</option>
           </select>
         </div>
@@ -128,9 +130,12 @@ function SignUp() {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+          className={`w-full py-2 px-4 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 ${
+            isLoading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          disabled={isLoading}
         >
-          Submit
+          {isLoading ? "Loading..." : "Submit"}
         </button>
       </form>
     </div>
